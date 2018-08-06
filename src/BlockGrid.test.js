@@ -63,4 +63,17 @@ describe('BlockGrid', () => {
       });
     });
   });
+
+  it('should sort blocks before rendering, so destroyed ones are at the top of a column (last in the array)', () => {
+    const gridEl = document.createElement('div');
+    const grid = new BlockGrid(5, 5, gridEl);
+
+    const block = grid.grid[2][2];
+
+    block.destroy();
+    grid.sortBlocks();
+
+    expect(block.x).toBe(2);
+    expect(block.y).toBe(4);
+  });
 });

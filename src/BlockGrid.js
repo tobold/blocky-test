@@ -22,6 +22,7 @@ class BlockGrid {
   }
 
   render(el = this.gridEl) {
+    this.sortBlocks();
     for (let x = 0; x < this.width; x++) {
       const id = 'col_' + x;
       const colEl = document.createElement('div');
@@ -71,6 +72,27 @@ class BlockGrid {
         this.blockClicked(new Event('click'), block);
       }
     });
+  }
+
+  sortBlocks() {
+    this.grid.forEach(column => {
+      column.sort((a, b) => {
+        if (a.exists && !b.exists) {
+          return -1;
+        } else if (!a.exists && b.exists) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    });
+
+    for (let x = 0; x < this.width; x++) {
+      for (let y = this.height - 1; y >= 0; y--) {
+        const block = this.grid[x][y];
+        block.updateCoods(x, y);
+      }
+    }
   }
 }
 

@@ -11,6 +11,11 @@ class Block {
   destroy() {
     this.exists = false;
   }
+
+  updateCoods(x, y) {
+    this.x = x;
+    this.y = y;
+  }
 }
 
 export default Block;
