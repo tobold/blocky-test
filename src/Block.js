@@ -12,7 +12,7 @@ class Block {
     this.exists = false;
   }
 
-  updateCoods(x, y) {
+  updateCoords(x, y) {
     this.x = x;
     this.y = y;
   }

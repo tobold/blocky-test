@@ -11,39 +11,34 @@ class BlockGrid {
     this.grid = [];
     this.gridEl = gridEl;
 
-    this.constructGrid(this.grid, this.width, this.height)
+    this.constructGrid(this.grid, this.width, this.height);
   }
 
   render() {
     this.removeAllChildElements(this.gridEl);
     this.sortAndUpdateBlocks();
-
-    for (let x = 0; x < this.width; x++) {
-      this.renderColumn(x);
-    }
+    this.renderColumns(this.width);
   }
 
-  renderColumn(x) {
-    const colEl = document.createElement('div');
-    colEl.id = 'col_' + x;
-    colEl.className = 'col';
-    this.gridEl.appendChild(colEl);
+  renderColumns(numberOfColumns) {
+    for (let x = 0; x < numberOfColumns; x++) {
+      const colEl = document.createElement('div');
+      colEl.id = 'col_' + x;
+      colEl.className = 'col';
+      this.gridEl.appendChild(colEl);
 
-    for (let y = this.height - 1; y >= 0; y--) {
-      this.renderBlocks(colEl, x, y)
+      for (let y = this.height - 1; y >= 0; y--) {
+        const block = this.grid[x][y];
+        const id = `block_${x}x${y}`;
+        const blockEl = document.createElement('div');
+
+        blockEl.id = id;
+        blockEl.className = 'block';
+        blockEl.style.background = block.exists ? block.colour : 'transparent';
+        blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
+        colEl.appendChild(blockEl);
+      }
     }
-  }
-
-  renderBlocks(colEl, x, y) {
-    const block = this.grid[x][y];
-    const id = `block_${x}x${y}`;
-    const blockEl = document.createElement('div');
-
-    blockEl.id = id;
-    blockEl.className = 'block';
-    blockEl.style.background = block.exists ? block.colour : 'transparent';
-    blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
-    colEl.appendChild(blockEl);
   }
 
   blockClicked(e, block) {
@@ -70,8 +65,8 @@ class BlockGrid {
   }
 
   sortAndUpdateBlocks() {
-    this.sortBlocks(this.grid);
-    this.updateBlockCoods(this.grid, this.width, this.height);
+    this.sortColumns(this.grid);
+    this.updateBlockCoords(this.grid, this.width, this.height);
   }
 
   removeAllChildElements(element) {
@@ -80,7 +75,7 @@ class BlockGrid {
     }
   }
 
-  sortBlocks(grid) {
+  sortColumns(grid) {
     grid.forEach(column => {
       column.sort((a, b) => {
         if (a.exists && !b.exists) {
@@ -94,11 +89,11 @@ class BlockGrid {
     });
   }
 
-  updateBlockCoods(grid, width, height) {
+  updateBlockCoords(grid, width, height) {
     for (let x = 0; x < width; x++) {
       for (let y = height - 1; y >= 0; y--) {
         const block = grid[x][y];
-        block.updateCoods(x, y);
+        block.updateCoords(x, y);
       }
     }
   }
