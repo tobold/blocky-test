@@ -2,6 +2,10 @@ import BlockGrid from './BlockGrid';
 import Block from './Block';
 
 describe('BlockGrid', () => {
+  afterEach(() => {
+    document.body.innerHTML = '';
+  });
+
   it('fills a multidimensional array of Blocks as its grid, according to the given width and height', () => {
     const grid = new BlockGrid(10, 10).grid;
 
