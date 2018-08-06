@@ -39,7 +39,7 @@ class BlockGrid {
   }
 
   blockClicked(e, block) {
-    console.log(e, block);
+    block.destroy();
   }
 }
 

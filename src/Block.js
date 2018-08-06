@@ -5,6 +5,11 @@ class Block {
     this.x = x;
     this.y = y;
     this.colour = COLOURS[Math.floor(Math.random() * COLOURS.length)];
+    this.exists = true;
+  }
+
+  destroy() {
+    this.exists = false;
   }
 }
 

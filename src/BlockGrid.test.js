@@ -24,5 +24,19 @@ describe('BlockGrid', () => {
     });
   });
 
-  xit('good luck, have fun!', () => {});
+  it('should destroy any block clicked on', () => {
+    const grid = new BlockGrid(2, 2);
+    const block = grid.grid[0][0];
+
+    const gridEl = document.createElement('div');
+    document.body.appendChild(gridEl);
+    grid.render(gridEl);
+
+    const clickEvent = new Event('click');
+    const blockElement = document.getElementById('block_0x0');
+
+    blockElement.dispatchEvent(clickEvent);
+
+    expect(block.exists).toBe(false);
+  });
 });

@@ -11,4 +11,15 @@ describe('Block', () => {
       expect(COLOURS).toContain(block.colour);
     });
   });
+
+  it('should have a EXIST state when constructed', () => {
+    const block = new Block(0, 0);
+    expect(block.exists).toBe(true);
+  });
+
+  it('should not EXIST after being destroyed', () => {
+    const block = new Block(0, 0);
+    block.destroy();
+    expect(block.exists).toBe(false);
+  });
 });
