@@ -11,42 +11,44 @@ class BlockGrid {
     this.grid = [];
     this.gridEl = gridEl;
 
-    this.constructGrid()
+    this.constructGrid(this.grid, this.width, this.height)
   }
 
-  render(el = this.gridEl) {
-    this.sortBlocks();
+  render() {
+    this.removeAllChildElements(this.gridEl);
+    this.sortAndUpdateBlocks();
+
     for (let x = 0; x < this.width; x++) {
-      const id = 'col_' + x;
-      const colEl = document.createElement('div');
-      colEl.id = id;
-      colEl.className = 'col';
-      el.appendChild(colEl);
-
-      for (let y = this.height - 1; y >= 0; y--) {
-        const block = this.grid[x][y];
-        const id = `block_${x}x${y}`;
-        const blockEl = document.createElement('div');
-
-        blockEl.id = id;
-        blockEl.className = 'block';
-        blockEl.style.background = block.exists ? block.colour : 'transparent';
-        blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
-        colEl.appendChild(blockEl);
-      }
+      this.renderColumn(x);
     }
   }
 
-  clearGrid(el = this.gridEl) {
-    while (el.firstChild) {
-      el.removeChild(el.firstChild);
+  renderColumn(x) {
+    const colEl = document.createElement('div');
+    colEl.id = 'col_' + x;
+    colEl.className = 'col';
+    this.gridEl.appendChild(colEl);
+
+    for (let y = this.height - 1; y >= 0; y--) {
+      this.renderBlocks(colEl, x, y)
     }
+  }
+
+  renderBlocks(colEl, x, y) {
+    const block = this.grid[x][y];
+    const id = `block_${x}x${y}`;
+    const blockEl = document.createElement('div');
+
+    blockEl.id = id;
+    blockEl.className = 'block';
+    blockEl.style.background = block.exists ? block.colour : 'transparent';
+    blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
+    colEl.appendChild(blockEl);
   }
 
   blockClicked(e, block) {
     block.destroy();
     this.recursivelyDestroyTouchingBlocks(block);
-    this.clearGrid();
     this.render();
   }
 
@@ -67,8 +69,19 @@ class BlockGrid {
     });
   }
 
-  sortBlocks() {
-    this.grid.forEach(column => {
+  sortAndUpdateBlocks() {
+    this.sortBlocks(this.grid);
+    this.updateBlockCoods(this.grid, this.width, this.height);
+  }
+
+  removeAllChildElements(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+
+  sortBlocks(grid) {
+    grid.forEach(column => {
       column.sort((a, b) => {
         if (a.exists && !b.exists) {
           return -1;
@@ -79,23 +92,25 @@ class BlockGrid {
         }
       });
     });
+  }
 
-    for (let x = 0; x < this.width; x++) {
-      for (let y = this.height - 1; y >= 0; y--) {
-        const block = this.grid[x][y];
+  updateBlockCoods(grid, width, height) {
+    for (let x = 0; x < width; x++) {
+      for (let y = height - 1; y >= 0; y--) {
+        const block = grid[x][y];
         block.updateCoods(x, y);
       }
     }
   }
 
-  constructGrid() {
-    for (let x = 0; x < this.width; x++) {
+  constructGrid(grid, width, height) {
+    for (let x = 0; x < width; x++) {
       const col = [];
-      for (let y = 0; y < this.height; y++) {
+      for (let y = 0; y < height; y++) {
         col.push(new Block(x, y));
       }
 
-      this.grid.push(col);
+      grid.push(col);
     }
   }
 }

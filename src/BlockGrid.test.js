@@ -34,7 +34,7 @@ describe('BlockGrid', () => {
 
     const block = grid.grid[0][0];
     document.body.appendChild(gridEl);
-    grid.render(gridEl);
+    grid.render();
 
     const clickEvent = new Event('click');
     const blockElement = document.getElementById('block_0x0');
@@ -75,7 +75,7 @@ describe('BlockGrid', () => {
     const block = grid.grid[2][2];
 
     block.destroy();
-    grid.sortBlocks();
+    grid.sortAndUpdateBlocks();
 
     expect(block.x).toBe(2);
     expect(block.y).toBe(4);
