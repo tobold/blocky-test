@@ -11,14 +11,7 @@ class BlockGrid {
     this.grid = [];
     this.gridEl = gridEl;
 
-    for (let x = 0; x < this.width; x++) {
-      const col = [];
-      for (let y = 0; y < this.height; y++) {
-        col.push(new Block(x, y));
-      }
-
-      this.grid.push(col);
-    }
+    this.constructGrid()
   }
 
   render(el = this.gridEl) {
@@ -37,7 +30,7 @@ class BlockGrid {
 
         blockEl.id = id;
         blockEl.className = 'block';
-        blockEl.style.background = block.exists ? block.colour : 'grey';
+        blockEl.style.background = block.exists ? block.colour : 'transparent';
         blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
         colEl.appendChild(blockEl);
       }
@@ -92,6 +85,17 @@ class BlockGrid {
         const block = this.grid[x][y];
         block.updateCoods(x, y);
       }
+    }
+  }
+
+  constructGrid() {
+    for (let x = 0; x < this.width; x++) {
+      const col = [];
+      for (let y = 0; y < this.height; y++) {
+        col.push(new Block(x, y));
+      }
+
+      this.grid.push(col);
     }
   }
 }
