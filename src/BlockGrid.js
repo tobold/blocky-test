@@ -1,10 +1,15 @@
 import Block from './Block';
 
 class BlockGrid {
-  constructor(width = 10, height = 10) {
+  constructor(
+    width = 10,
+    height = 10,
+    gridEl = document.getElementById('gridEl')
+  ) {
     this.width = width;
     this.height = height;
     this.grid = [];
+    this.gridEl = gridEl;
 
     for (let x = 0; x < this.width; x++) {
       const col = [];
@@ -16,7 +21,7 @@ class BlockGrid {
     }
   }
 
-  render(el = document.getElementById('gridEl')) {
+  render(el = this.gridEl) {
     for (let x = 0; x < this.width; x++) {
       const id = 'col_' + x;
       const colEl = document.createElement('div');
@@ -31,15 +36,41 @@ class BlockGrid {
 
         blockEl.id = id;
         blockEl.className = 'block';
-        blockEl.style.background = block.colour;
+        blockEl.style.background = block.exists ? block.colour : 'grey';
         blockEl.addEventListener('click', evt => this.blockClicked(evt, block));
         colEl.appendChild(blockEl);
       }
     }
   }
 
+  clearGrid(el = this.gridEl) {
+    while (el.firstChild) {
+      el.removeChild(el.firstChild);
+    }
+  }
+
   blockClicked(e, block) {
     block.destroy();
+    this.recursivelyDestroyTouchingBlocks(block);
+    this.clearGrid();
+    this.render();
+  }
+
+  recursivelyDestroyTouchingBlocks(block) {
+    const colour = block.colour;
+
+    const touchingBlocks = [
+      this.grid[block.x][block.y + 1],
+      this.grid[block.x][block.y - 1],
+      this.grid[block.x + 1] && this.grid[block.x + 1][block.y],
+      this.grid[block.x - 1] && this.grid[block.x - 1][block.y],
+    ];
+
+    touchingBlocks.forEach(block => {
+      if (block && block.exists && block.colour === colour) {
+        this.blockClicked(new Event('click'), block);
+      }
+    });
   }
 }
 

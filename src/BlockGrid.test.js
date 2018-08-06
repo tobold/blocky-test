@@ -25,10 +25,10 @@ describe('BlockGrid', () => {
   });
 
   it('should destroy any block clicked on', () => {
-    const grid = new BlockGrid(2, 2);
-    const block = grid.grid[0][0];
-
     const gridEl = document.createElement('div');
+    const grid = new BlockGrid(2, 2, gridEl);
+
+    const block = grid.grid[0][0];
     document.body.appendChild(gridEl);
     grid.render(gridEl);
 
@@ -38,5 +38,29 @@ describe('BlockGrid', () => {
     blockElement.dispatchEvent(clickEvent);
 
     expect(block.exists).toBe(false);
+  });
+
+  it('should also destroy any touching block of the same colour as the block clicked on', () => {
+    const gridEl = document.createElement('div');
+    const grid = new BlockGrid(2, 2, gridEl);
+    grid.grid.forEach(column => {
+      column.forEach(block => {
+        block.colour = 'blue';
+      });
+    });
+
+    document.body.appendChild(gridEl);
+    grid.render(gridEl);
+
+    const clickEvent = new Event('click');
+    const blockElement = document.getElementById('block_0x0');
+
+    blockElement.dispatchEvent(clickEvent);
+
+    grid.grid.forEach(column => {
+      column.forEach(block => {
+        expect(block.exists).toBe(false);
+      });
+    });
   });
 });
